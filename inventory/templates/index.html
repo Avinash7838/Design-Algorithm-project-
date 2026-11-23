@@ -1,0 +1,238 @@
+
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Inventory Optimizer</title>
+
+    <link rel="stylesheet"
+    href="{{ url_for('static', filename='style.css') }}">
+</head>
+
+<body>
+
+<header>
+    <div class="logo">STOCK<span>WISE</span></div>
+    <div class="header-tag">INVENTORY MANAGEMENT SYSTEM</div>
+</header>
+
+
+<main>
+
+    <section class="hero">
+        <div>
+            <p class="eyebrow">SMART INVENTORY PLANNING</p>
+
+            <h1>Maximize Profit.<br>
+            <span>Optimize Storage.</span></h1>
+
+            <p class="description">
+                Select the most profitable products without
+                exceeding your available warehouse capacity.
+            </p>
+        </div>
+
+        <div class="hero-icon">📦</div>
+    </section>
+
+
+    <section class="summary">
+
+        <div class="summary-card">
+            <p>TOTAL PRODUCTS</p>
+            <h2>{{ products|length }}</h2>
+            <small>Available inventory items</small>
+        </div>
+
+        <div class="summary-card">
+            <p>STORAGE CAPACITY</p>
+            <h2>{{ capacity }} kg</h2>
+            <small>Maximum allowed weight</small>
+        </div>
+
+        <div class="summary-card">
+            <p>ALGORITHMS</p>
+            <h2>02</h2>
+            <small>Greedy and Dynamic Programming</small>
+        </div>
+
+    </section>
+
+
+    <section class="content-card">
+
+        <div class="section-title">
+            <h2>01. Product Inventory</h2>
+            <p>Available products and their values</p>
+        </div>
+
+        <table>
+            <thead>
+                <tr>
+                    <th>Product</th>
+                    <th>Weight (kg)</th>
+                    <th>Profit (₹)</th>
+                </tr>
+            </thead>
+
+            <tbody>
+                {% for product in products %}
+                <tr>
+                    <td><strong>{{ product.name }}</strong></td>
+                    <td>{{ product.weight }}</td>
+                    <td>₹{{ product.profit }}</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+
+    </section>
+
+
+    <section class="capacity-card">
+
+        <div>
+            <p class="eyebrow">02. OPTIMIZATION SETTINGS</p>
+            <h2>Set Your Storage Capacity</h2>
+            <p>Enter the maximum weight your warehouse can store.</p>
+        </div>
+
+        <form method="POST">
+            <input
+                type="number"
+                name="capacity"
+                min="1"
+                max="100"
+                value="{{ capacity }}"
+                required
+            >
+
+            <button type="submit">Optimize Inventory →</button>
+        </form>
+
+    </section>
+
+
+    {% if fractional_profit is not none %}
+
+    <section class="results">
+
+        <div class="section-title">
+            <p class="eyebrow">03. ALGORITHM RESULTS</p>
+            <h2>Optimization Comparison</h2>
+            <p>Compare both methods for your selected capacity.</p>
+        </div>
+
+
+        <div class="result-grid">
+
+            <div class="result-card greedy">
+
+                <span class="algorithm-tag">GREEDY APPROACH</span>
+
+                <h2>Fractional Knapsack</h2>
+
+                <p class="algorithm-description">
+                    Products can be divided into fractions
+                    to maximize total profit.
+                </p>
+
+                <div class="profit">
+                    ₹{{ "%.2f"|format(fractional_profit) }}
+                </div>
+
+                <p class="profit-label">Maximum Profit</p>
+
+                <h3>Selected Products</h3>
+
+                {% for item in fractional_items %}
+                <div class="selected-item">
+                    <span>{{ item.name }}</span>
+                    <strong>₹{{ "%.2f"|format(item.profit) }}</strong>
+                </div>
+                {% endfor %}
+
+            </div>
+
+
+            <div class="result-card dynamic">
+
+                <span class="algorithm-tag">DYNAMIC PROGRAMMING</span>
+
+                <h2>0/1 Knapsack</h2>
+
+                <p class="algorithm-description">
+                    Each product is either selected completely
+                    or not selected.
+                </p>
+
+                <div class="profit">
+                    ₹{{ zero_one_profit }}
+                </div>
+
+                <p class="profit-label">Maximum Profit</p>
+
+                <h3>Selected Products</h3>
+
+                {% for item in zero_one_items %}
+                <div class="selected-item">
+                    <span>{{ item.name }}</span>
+                    <strong>₹{{ item.profit }}</strong>
+                </div>
+                {% endfor %}
+
+            </div>
+
+        </div>
+
+    </section>
+
+    {% endif %}
+
+
+    <section class="explanation">
+
+        <p class="eyebrow">04. LEARN THE ALGORITHMS</p>
+
+        <h2>How does it work?</h2>
+
+        <div class="explanation-grid">
+
+            <div>
+                <h3>01. Greedy Algorithm</h3>
+                <p>
+                    Selects products based on the highest
+                    profit-to-weight ratio. It allows partial
+                    selection of products.
+                </p>
+                <small>Time Complexity: O(n log n)</small>
+            </div>
+
+            <div>
+                <h3>02. Dynamic Programming</h3>
+                <p>
+                    Checks different combinations to find
+                    the maximum profit without exceeding
+                    the capacity.
+                </p>
+                <small>Time Complexity: O(n × W)</small>
+            </div>
+
+        </div>
+
+    </section>
+
+
+    <footer>
+        STOCKWISE | Intelligent Inventory Management
+        <br>
+        Python • Flask • Greedy • Dynamic Programming
+    </footer>
+
+</main>
+
+</body>
+</html>
